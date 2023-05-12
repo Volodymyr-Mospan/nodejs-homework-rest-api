@@ -1,5 +1,6 @@
-const contactBodySchema = require("./contacts");
+const { contactAddBodySchema, contactUpdateBodySchema } = require("./contacts");
 
 module.exports = {
-  contactBodySchema,
+  contactAddBodySchema,
+  contactUpdateBodySchema,
 };

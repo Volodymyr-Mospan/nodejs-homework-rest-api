@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const contactBodySchema = Joi.object({
+const contactAddBodySchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
   email: Joi.string()
     .email({
@@ -12,4 +12,14 @@ const contactBodySchema = Joi.object({
     .required(),
 });
 
-module.exports = contactBodySchema;
+const contactUpdateBodySchema = Joi.object({
+  name: Joi.string().min(3).max(30),
+  email: Joi.string().email({
+    minDomainSegments: 2,
+  }),
+  phone: Joi.string().pattern(/^\(\d{3}\) \d{3}-\d{4}$/),
+})
+  .min(1)
+  .required();
+
+module.exports = { contactAddBodySchema, contactUpdateBodySchema };

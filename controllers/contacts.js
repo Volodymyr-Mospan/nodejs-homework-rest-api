@@ -2,16 +2,16 @@ const contactsServisce = require("../models/contacts");
 
 const { HttpError, ctrlWrapper } = require("../helpers");
 
-const getAllContacts = async (req, res) => {
+const listContacts = async (req, res) => {
   const result = await contactsServisce.listContacts();
   res.json(result);
 };
 
-const getContactByID = async (req, res) => {
-  const { contactId } = req.params;
-  const result = await contactsServisce.getContactById(contactId);
+const getById = async (req, res) => {
+  const { id } = req.params;
+  const result = await contactsServisce.getById(id);
   if (!result) {
-    throw HttpError(404, `Contact with id ${contactId} not found`);
+    throw HttpError(404, `Not found`);
   }
   res.json(result);
 };
@@ -21,28 +21,28 @@ const addContact = async (req, res) => {
   res.status(201).json(result);
 };
 
-const updateContactByID = async (req, res) => {
-  const { contactId } = req.params;
-  const result = await contactsServisce.updateContact(contactId, req.body);
+const updateContact = async (req, res) => {
+  const { id } = req.params;
+  const result = await contactsServisce.updateContact(id, req.body);
   if (!result) {
-    throw HttpError(404, `Contact with id ${contactId} not found`);
+    throw HttpError(404, `Not found`);
   }
   res.json(result);
 };
 
-const deleteContactByID = async (req, res) => {
-  const { contactId } = req.params;
-  const result = await contactsServisce.removeContact(contactId);
+const removeContact = async (req, res) => {
+  const { id } = req.params;
+  const result = await contactsServisce.removeContact(id);
   if (!result) {
-    throw HttpError(404, `Contact with id ${contactId} not found`);
+    throw HttpError(404, "Not found");
   }
-  res.json(result);
+  res.json({ message: "contact deleted" });
 };
 
 module.exports = {
-  getAllContacts: ctrlWrapper(getAllContacts),
-  getContactByID: ctrlWrapper(getContactByID),
+  listContacts: ctrlWrapper(listContacts),
+  getById: ctrlWrapper(getById),
   addContact: ctrlWrapper(addContact),
-  updateContactByID: ctrlWrapper(updateContactByID),
-  deleteContactByID: ctrlWrapper(deleteContactByID),
+  updateContact: ctrlWrapper(updateContact),
+  removeContact: ctrlWrapper(removeContact),
 };
