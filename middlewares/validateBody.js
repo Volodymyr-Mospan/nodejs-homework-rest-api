@@ -23,6 +23,18 @@ const validateUpdateBody = (schema) => {
   const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
+      next(HttpError(400, "missing fields"));
+    }
+    next();
+  };
+
+  return func;
+};
+
+const validateUpdateFavorite = (schema) => {
+  const func = (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
       next(HttpError(400, "missing field favorite"));
     }
     next();
@@ -31,4 +43,8 @@ const validateUpdateBody = (schema) => {
   return func;
 };
 
-module.exports = { validateAddBody, validateUpdateBody };
+module.exports = {
+  validateAddBody,
+  validateUpdateBody,
+  validateUpdateFavorite,
+};

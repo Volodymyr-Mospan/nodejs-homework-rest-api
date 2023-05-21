@@ -4,6 +4,7 @@ const ctrl = require("../../controllers/contacts");
 const {
   validateAddBody,
   validateUpdateBody,
+  validateUpdateFavorite,
   isValidId,
 } = require("../../middlewares");
 const {
@@ -27,7 +28,7 @@ router.put(
 router.patch(
   "/:id/favorite",
   isValidId,
-  validateUpdateBody(contactUpdateFavoriteSchema),
+  validateUpdateFavorite(contactUpdateFavoriteSchema),
   ctrl.updateStatusContact
 );
 
