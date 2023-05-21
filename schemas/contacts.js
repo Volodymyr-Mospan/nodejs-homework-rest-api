@@ -6,10 +6,20 @@ const contactBodySchema = Joi.object({
     .email({
       minDomainSegments: 2,
     })
-    .required(),
-  phone: Joi.string().required(),
+    .required()
+    .messages({
+      "any.required": "missing required email",
+      "string.email": "Invalid format email",
+    }),
+  phone: Joi.string().required().messages({
+    "any.required": "missing required phone",
+  }),
   favorite: Joi.boolean(),
-});
+})
+  .required()
+  .messages({
+    "any.required": "missing fields",
+  });
 
 const contactUpdateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
