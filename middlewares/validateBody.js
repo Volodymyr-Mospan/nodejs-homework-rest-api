@@ -1,17 +1,10 @@
-const { HttpError, extractFieldNameFromErrorMessage } = require("../helpers");
+const { HttpError } = require("../helpers");
 
 const validateAddBody = (schema) => {
   const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
-      next(
-        HttpError(
-          400,
-          `missing required ${extractFieldNameFromErrorMessage(
-            error.message
-          )} field`
-        )
-      );
+      next(HttpError(400, error.message));
     }
     next();
   };
@@ -23,7 +16,7 @@ const validateUpdateBody = (schema) => {
   const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
-      next(HttpError(400, error));
+      next(HttpError(400, error.message));
     }
     next();
   };
