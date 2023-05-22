@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const ctrl = require("../../controllers/contacts");
 const {
-  validateAddBody,
-  validateUpdateBody,
+  validateBody,
   validateUpdateFavorite,
   isValidId,
 } = require("../../middlewares");
@@ -16,12 +15,12 @@ router.get("/", ctrl.listContacts);
 
 router.get("/:id", isValidId, ctrl.getById);
 
-router.post("/", validateAddBody(contactBodySchema), ctrl.addContact);
+router.post("/", validateBody(contactBodySchema), ctrl.addContact);
 
 router.put(
   "/:id",
   isValidId,
-  validateUpdateBody(contactBodySchema),
+  validateBody(contactBodySchema),
   ctrl.updateContact
 );
 
