@@ -1,17 +1,14 @@
-const { HttpError, extractFieldNameFromErrorMessage } = require("../helpers");
+const { HttpError } = require("../helpers");
 
-const validateAddBody = (schema) => {
+const validateBody = (schema) => {
   const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
+
     if (error) {
-      next(
-        HttpError(
-          400,
-          `missing required ${extractFieldNameFromErrorMessage(
-            error.message
-          )} field`
-        )
-      );
+      if (!Object.keys(req.body).length) {
+        next(HttpError(400, `missing fields`));
+      }
+      next(HttpError(400, error.message));
     }
     next();
   };
@@ -19,11 +16,11 @@ const validateAddBody = (schema) => {
   return func;
 };
 
-const validateUpdateBody = (schema) => {
+const validateUpdateFavorite = (schema) => {
   const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
-      next(HttpError(400, "missing fields"));
+      next(HttpError(400, error.message));
     }
     next();
   };
@@ -31,4 +28,7 @@ const validateUpdateBody = (schema) => {
   return func;
 };
 
-module.exports = { validateAddBody, validateUpdateBody };
+module.exports = {
+  validateBody,
+  validateUpdateFavorite,
+};

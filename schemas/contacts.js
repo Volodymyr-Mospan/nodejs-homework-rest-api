@@ -1,25 +1,35 @@
 const Joi = require("joi");
 
-const contactAddBodySchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
+const contactBodySchema = Joi.object({
+  name: Joi.string().min(3).max(30).required().messages({
+    "any.required": "missing required name field",
+  }),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
     })
-    .required(),
-  phone: Joi.string()
-    .pattern(/^\(\d{3}\) \d{3}-\d{4}$/)
-    .required(),
-});
-
-const contactUpdateBodySchema = Joi.object({
-  name: Joi.string().min(3).max(30),
-  email: Joi.string().email({
-    minDomainSegments: 2,
+    .required()
+    .messages({
+      "any.required": "missing required email field",
+      "string.email": "Invalid format email",
+    }),
+  phone: Joi.string().required().messages({
+    "any.required": "missing required phone field",
   }),
-  phone: Joi.string().pattern(/^\(\d{3}\) \d{3}-\d{4}$/),
+  favorite: Joi.boolean(),
 })
-  .min(1)
-  .required();
+  .required()
+  .messages({
+    "any.required": "missing fields",
+  });
 
-module.exports = { contactAddBodySchema, contactUpdateBodySchema };
+const contactUpdateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required().messages({
+    "any.required": "missing field favorite",
+  }),
+}).required();
+
+module.exports = {
+  contactBodySchema,
+  contactUpdateFavoriteSchema,
+};
