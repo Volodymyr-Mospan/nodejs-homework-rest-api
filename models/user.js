@@ -31,7 +31,7 @@ userSchema.post("save", (error, date, next) => {
   next();
 });
 
-const registerSchema = Joi.object({
+const authSchema = Joi.object({
   password: Joi.string().required().messages({
     "any.required": "Set password for user",
   }),
@@ -41,7 +41,7 @@ const registerSchema = Joi.object({
 }).required();
 
 const joiSchemas = {
-  registerSchema,
+  authSchema,
 };
 
 const User = model("user", userSchema);
