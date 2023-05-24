@@ -6,28 +6,25 @@ const {
   validateUpdateFavorite,
   isValidId,
 } = require("../../middlewares");
-const {
-  contactBodySchema,
-  contactUpdateFavoriteSchema,
-} = require("../../schemas");
+const { joiSchemas } = require("../../models/contact");
 
 router.get("/", ctrl.listContacts);
 
 router.get("/:id", isValidId, ctrl.getById);
 
-router.post("/", validateBody(contactBodySchema), ctrl.addContact);
+router.post("/", validateBody(joiSchemas.contactBodySchema), ctrl.addContact);
 
 router.put(
   "/:id",
   isValidId,
-  validateBody(contactBodySchema),
+  validateBody(joiSchemas.contactBodySchema),
   ctrl.updateContact
 );
 
 router.patch(
   "/:id/favorite",
   isValidId,
-  validateUpdateFavorite(contactUpdateFavoriteSchema),
+  validateUpdateFavorite(joiSchemas.contactUpdateFavoriteSchema),
   ctrl.updateStatusContact
 );
 
