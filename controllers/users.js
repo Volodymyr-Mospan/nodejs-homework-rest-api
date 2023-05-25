@@ -42,22 +42,25 @@ const login = async (req, res) => {
   }
 
   const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "23h" });
-  const result = await User.findByIdAndUpdate(
-    user._id,
-    { token: token },
-    { new: true }
-  );
+  await User.findByIdAndUpdate(user._id, { token: token }, { new: true });
 
   res.status(200).json({
     token: token,
     user: {
-      email: result.email,
-      subscription: result.subscription,
+      email: user.email,
+      subscription: user.subscription,
     },
   });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
+  res.status(204).send();
 };
 
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  logout: ctrlWrapper(logout),
 };
