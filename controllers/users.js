@@ -13,8 +13,13 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "23h" });
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    token,
+  });
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -38,12 +43,17 @@ const login = async (req, res) => {
   }
 
   const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "23h" });
+  const result = await User.findByIdAndUpdate(
+    user._id,
+    { token: token },
+    { new: true }
+  );
 
   res.status(200).json({
     token: token,
     user: {
-      email: user.email,
-      subscription: user.subscription,
+      email: result.email,
+      subscription: result.subscription,
     },
   });
 };
