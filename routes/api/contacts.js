@@ -7,9 +7,11 @@ const {
   isValidId,
 } = require("../../middlewares");
 const { joiSchemas } = require("../../models/contact");
-const authentication = require("../../middlewares/authentication");
+const authenticate = require("../../middlewares/authenticate");
 
-router.get("/", authentication, ctrl.listContacts);
+router.use(authenticate);
+
+router.get("/", ctrl.listContacts);
 
 router.get("/:id", isValidId, ctrl.getById);
 
