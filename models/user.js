@@ -43,8 +43,18 @@ const authSchema = Joi.object({
   }),
 }).required();
 
+const subscriptionUpdateSchema = Joi.object({
+  subscription: Joi.string()
+    .valid("starter", "pro", "business")
+    .required()
+    .messages({
+      "any.only": "incorrect value",
+    }),
+}).required();
+
 const joiSchemas = {
   authSchema,
+  subscriptionUpdateSchema,
 };
 
 const User = model("user", userSchema);
