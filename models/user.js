@@ -23,7 +23,7 @@ const userSchema = new Schema(
     },
     avatarURL: {
       type: String,
-      default: "",
+      required: true,
     },
   },
   {
@@ -45,7 +45,6 @@ const authSchema = Joi.object({
   email: Joi.string().email({ minDomainSegments: 2 }).required().messages({
     "any.required": "Email is required",
   }),
-  avatarURL: Joi.string(),
 }).required();
 
 const subscriptionUpdateSchema = Joi.object({

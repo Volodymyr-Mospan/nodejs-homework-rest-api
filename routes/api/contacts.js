@@ -5,9 +5,9 @@ const {
   validateBody,
   validateUpdateFavorite,
   isValidId,
+  authenticate,
 } = require("../../middlewares");
 const { joiSchemas } = require("../../models/contact");
-const authenticate = require("../../middlewares/authenticate");
 
 router.use(authenticate);
 
