@@ -1,8 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
+const Jimp = require("jimp");
+
 const { User } = require("../models/user");
 const { HttpError, ctrlWrapper } = require("../helpers");
 const { SECRET_KEY } = process.env;
+const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -13,16 +19,19 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email);
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
+    avatarURL,
   });
 
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL,
     },
   });
 };
@@ -74,7 +83,6 @@ const current = async (req, res) => {
 const subscriptionUpdate = async (req, res) => {
   const { subscription } = req.body;
   const { _id } = req.user;
-  console.log(subscription);
   const updatedUser = await User.findByIdAndUpdate(
     { _id },
     { subscription },
@@ -87,10 +95,32 @@ const subscriptionUpdate = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tempUpload, originalname } = req.file;
+
+  await Jimp.read(tempUpload)
+    .then((image) => {
+      return image.contain(250, 250).write(tempUpload);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
+  const newFileName = `${_id}_${originalname}`;
+  const resultUpload = path.join(avatarDir, newFileName);
+  await fs.rename(tempUpload, resultUpload);
+  const avatarURL = path.join("avatar", newFileName);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({ avatarURL });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   current: ctrlWrapper(current),
   subscriptionUpdate: ctrlWrapper(subscriptionUpdate),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
