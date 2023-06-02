@@ -32,7 +32,7 @@ const register = async (req, res) => {
 
   const vereficationEmail = {
     to: email,
-    subject: "Test mail",
+    subject: "Verification",
     html: `<a href='http://localhost:3000/users/verify/${verificationToken}'>Verify your email</a>`,
   };
 
@@ -53,7 +53,7 @@ const verify = async (req, res) => {
   const user = await User.findOne({ verificationToken });
 
   if (!user) {
-    throw HttpError(404, `Not found`);
+    throw HttpError(404, `User not found`);
   }
 
   await User.findByIdAndUpdate(user._id, {
@@ -63,6 +63,28 @@ const verify = async (req, res) => {
 
   res.status(200).json({
     message: "Verification successful",
+  });
+};
+
+const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const user = User.findOne({ email });
+
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
+
+  const vereficationEmail = {
+    to: email,
+    subject: "Verification",
+    html: `<a href='http://localhost:3000/users/verify/${user.verificationToken}'>Verify your email</a>`,
+  };
+
+  sendEmail(vereficationEmail);
+
+  res.status(200).json({
+    message: "Verification email sent",
   });
 };
 
@@ -153,6 +175,7 @@ const updateAvatar = async (req, res) => {
 module.exports = {
   register: ctrlWrapper(register),
   verify: ctrlWrapper(verify),
+  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   current: ctrlWrapper(current),
