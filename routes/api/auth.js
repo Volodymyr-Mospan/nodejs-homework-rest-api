@@ -13,7 +13,7 @@ router.get(
 );
 
 router.post(
-  "/veryfy",
+  "/verify",
   validateBody(joiSchemas.emailSchema),
   ctrl.resendVerifyEmail
 );
