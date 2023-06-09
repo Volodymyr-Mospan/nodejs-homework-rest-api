@@ -6,6 +6,14 @@ const { joiSchemas } = require("../../models/user");
 
 router.post("/register", validateBody(joiSchemas.authSchema), ctrl.register);
 
+router.get("/verify/:verificationToken", ctrl.verify);
+
+router.post(
+  "/verify",
+  validateBody(joiSchemas.emailSchema),
+  ctrl.resendVerifyEmail
+);
+
 router.post("/login", validateBody(joiSchemas.authSchema), ctrl.login);
 
 router.post("/logout", authenticate, ctrl.logout);
